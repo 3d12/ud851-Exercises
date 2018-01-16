@@ -30,14 +30,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // DONE (3) Use findViewById to get a reference to the TextView from the layout
-        TextView textViewID = (TextView) findViewById(R.id.tv_toy_names);
+        mToysListTextView = (TextView) findViewById(R.id.tv_toy_names);
 
         // DONE (4) Use the static ToyBox.getToyNames method and store the names in a String array
         String[] toyNamesArray = ToyBox.getToyNames();
 
         // TODO (5) Loop through each toy and append the name to the TextView (add \n for spacing)
         for (String toy : toyNamesArray) {
-            textViewID.append(toy+'\n');
+            mToysListTextView.append(toy+'\n');
         }
     }
 }
