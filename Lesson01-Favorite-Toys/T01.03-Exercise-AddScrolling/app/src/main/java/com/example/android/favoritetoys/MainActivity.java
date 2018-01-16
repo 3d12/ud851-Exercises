@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
          * TextView. Later, we'll learn about a better way to display lists of data.
          */
         for (String toyName : toyNames) {
-            mToysListTextView.append(toyName + "\n\n\n");
+            mToysListTextView.append(toyName + '\n');
         }
     }
 }
