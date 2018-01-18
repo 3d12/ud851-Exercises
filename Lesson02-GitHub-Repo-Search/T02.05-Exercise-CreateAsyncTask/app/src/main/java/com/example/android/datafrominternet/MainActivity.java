@@ -59,8 +59,6 @@ public class MainActivity extends AppCompatActivity {
         mUrlDisplayTextView.setText(githubSearchUrl.toString());
         GithubQueryTask qt = new GithubQueryTask();
         qt.execute(githubSearchUrl);
-        String githubSearchResults = qt.toString();
-        mSearchResultsTextView.setText(githubSearchResults);
         // DONE (4) Create a new GithubQueryTask and call its execute method, passing in the url to query
     }
 
