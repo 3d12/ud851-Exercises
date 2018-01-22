@@ -23,6 +23,13 @@
     android:padding="32dp"
     tools:context=".MainActivity">
 
+    <EditText
+        android:id="@+id/et_url_field"
+        android:hint="Enter a URL"
+        android:textSize="22sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <Button
         android:layout_width="match_parent"
         android:layout_height="0dp"
