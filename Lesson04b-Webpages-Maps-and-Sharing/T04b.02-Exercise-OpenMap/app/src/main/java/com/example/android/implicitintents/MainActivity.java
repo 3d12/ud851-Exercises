@@ -21,14 +21,17 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
+    private EditText mSearchValue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mSearchValue = (EditText) this.findViewById(R.id.et_search_value);
     }
 
     /**
@@ -50,11 +53,13 @@ public class MainActivity extends AppCompatActivity {
      */
     public void onClickOpenAddressButton(View v) {
         // DONE (5) Store an address in a String
-        String addressAsString = "Mountain View,CA";
+        String addressAsString = mSearchValue.getText().toString();
         // DONE (6) Use Uri.Builder with the appropriate scheme and query to form the Uri for the address
         Uri.Builder builder = new Uri.Builder();
         builder.scheme("geo");
-        builder.query(addressAsString);
+        builder.path("0,0");
+        builder.appendQueryParameter("q", addressAsString);
+        builder.appendQueryParameter("z","10");
         // DONE (7) Replace the Toast with a call to showMap, passing in the Uri from the previous step
         //Toast.makeText(this, "TODO: Open a map when this button is clicked", Toast.LENGTH_SHORT).show();
         showMap(builder.build());
