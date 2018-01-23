@@ -21,14 +21,17 @@ import android.os.Bundle;
 import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
+    private EditText mSearchValue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mSearchValue = (EditText) this.findViewById(R.id.et_search_value);
     }
 
     /**
@@ -68,11 +71,12 @@ public class MainActivity extends AppCompatActivity {
      */
     public void onClickShareTextButton(View v) {
         // DONE (5) Specify a String you'd like to share
-        String fixedString = "This is a string.";
+        //String fixedString = "This is a string.";
+        String variableString = mSearchValue.getText().toString();
 
         // DONE (6) Replace the Toast with shareText, passing in the String from step 5
         //Toast.makeText(this, "TODO: Share text when this is clicked", Toast.LENGTH_LONG).show();
-        shareText(fixedString);
+        shareText(variableString);
     }
 
     /**
