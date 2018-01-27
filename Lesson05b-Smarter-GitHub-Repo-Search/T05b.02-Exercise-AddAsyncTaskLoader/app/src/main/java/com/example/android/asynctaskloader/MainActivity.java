@@ -21,6 +21,7 @@ import android.content.Loader;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,6 +37,8 @@ import java.net.URL;
 
 // DONE (1) implement LoaderManager.LoaderCallbacks<String> on MainActivity
 public class MainActivity extends AppCompatActivity implements android.support.v4.app.LoaderManager.LoaderCallbacks<String> {
+
+    private static final String TAG = "MainActivity";
 
     /* A constant to save and restore the URL that is being displayed */
     private static final String SEARCH_QUERY_URL_EXTRA = "query";
@@ -154,8 +157,10 @@ public class MainActivity extends AppCompatActivity implements android.support.v
     @Override
     public android.support.v4.content.Loader<String> onCreateLoader(int id, final Bundle args) {
         android.support.v4.content.AsyncTaskLoader<String> loader = new android.support.v4.content.AsyncTaskLoader<String>(this) {
+            private static final String TAG = "AsyncTaskLoader";
             @Override
             protected void onStartLoading() {
+                Log.d(TAG, "onStartLoading was called");
                 if (args == null) {
                     return;
                 }
@@ -165,6 +170,7 @@ public class MainActivity extends AppCompatActivity implements android.support.v
 
             @Override
             public String loadInBackground() {
+                Log.d(TAG, "loadInBackground was called");
                 if (args.containsKey(SEARCH_QUERY_URL_EXTRA)) {
                     String searchQuery = args.getString(SEARCH_QUERY_URL_EXTRA);
                     if (searchQuery != null && !searchQuery.equals("")) {
@@ -185,6 +191,7 @@ public class MainActivity extends AppCompatActivity implements android.support.v
 
     @Override
     public void onLoadFinished(android.support.v4.content.Loader<String> loader, String data) {
+        Log.d(TAG, "onLoadFinished was called");
         mLoadingIndicator.setVisibility(View.INVISIBLE);
         if (data != null && !data.equals("")) {
             showJsonDataView();
@@ -196,6 +203,7 @@ public class MainActivity extends AppCompatActivity implements android.support.v
 
     @Override
     public void onLoaderReset(android.support.v4.content.Loader<String> loader) {
+        Log.d(TAG, "onLoaderReset was called");
     }
 
 
