@@ -21,6 +21,7 @@ import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,6 +36,10 @@ import java.net.URL;
 
 public class MainActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<String> {
+
+    private static final String TAG = "MainActivity";
+    private int mNumLoaders;
+    private static final String NUM_LOADERS_EXTRA = "numLoaders";
 
     /* A constant to save and restore the URL that is being displayed */
     private static final String SEARCH_QUERY_URL_EXTRA = "query";
@@ -72,6 +77,9 @@ public class MainActivity extends AppCompatActivity implements
             String queryUrl = savedInstanceState.getString(SEARCH_QUERY_URL_EXTRA);
 
             mUrlDisplayTextView.setText(queryUrl);
+            mNumLoaders = savedInstanceState.getInt(NUM_LOADERS_EXTRA);
+        } else {
+            mNumLoaders = 0;
         }
 
         /*
@@ -163,12 +171,17 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public Loader<String> onCreateLoader(int id, final Bundle args) {
+        Log.d(TAG, "onCreateLoader was called, number of loaders is currently " + mNumLoaders++);
         return new AsyncTaskLoader<String>(this) {
 
-            // TODO (1) Create a String member variable called mGithubJson that will store the raw JSON
+            // DONE (1) Create a String member variable called mGithubJson that will store the raw JSON
+            String mGithubJson;
+
+            private static final String TAG = "AsyncTaskLoader";
 
             @Override
             protected void onStartLoading() {
+                Log.d(TAG, "onStartLoading was called, number of loaders is currently " + mNumLoaders);
 
                 /* If no arguments were passed, we don't have a query to perform. Simply return. */
                 if (args == null) {
@@ -181,12 +194,17 @@ public class MainActivity extends AppCompatActivity implements
                  */
                 mLoadingIndicator.setVisibility(View.VISIBLE);
 
-                // TODO (2) If mGithubJson is not null, deliver that result. Otherwise, force a load
-                forceLoad();
+                // DONE (2) If mGithubJson is not null, deliver that result. Otherwise, force a load
+                if (mGithubJson != null) {
+                    deliverResult(mGithubJson);
+                } else {
+                    forceLoad();
+                }
             }
 
             @Override
             public String loadInBackground() {
+                Log.d(TAG, "loadInBackground was called, number of loaders is currently " + mNumLoaders);
 
                 /* Extract the search query from the args using our constant */
                 String searchQueryUrlString = args.getString(SEARCH_QUERY_URL_EXTRA);
@@ -207,13 +225,21 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
 
-            // TODO (3) Override deliverResult and store the data in mGithubJson
-            // TODO (4) Call super.deliverResult after storing the data
+            // DONE (3) Override deliverResult and store the data in mGithubJson
+            // DONE (4) Call super.deliverResult after storing the data
+
+            @Override
+            public void deliverResult(String data) {
+                Log.d(TAG, "deliverResult was called, number of loaders is currently " + mNumLoaders);
+                this.mGithubJson = data;
+                super.deliverResult(data);
+            }
         };
     }
 
     @Override
     public void onLoadFinished(Loader<String> loader, String data) {
+        Log.d(TAG, "onLoadFinished was called, number of loaders is currently " + mNumLoaders);
 
         /* When we finish loading, we want to hide the loading indicator from the user. */
         mLoadingIndicator.setVisibility(View.INVISIBLE);
@@ -231,6 +257,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onLoaderReset(Loader<String> loader) {
+        Log.d(TAG, "onLoaderReset was called, number of loaders is currently " + mNumLoaders);
         /*
          * We aren't using this method in our example application, but we are required to Override
          * it to implement the LoaderCallbacks<String> interface
@@ -259,5 +286,6 @@ public class MainActivity extends AppCompatActivity implements
 
         String queryUrl = mUrlDisplayTextView.getText().toString();
         outState.putString(SEARCH_QUERY_URL_EXTRA, queryUrl);
+        outState.putInt(NUM_LOADERS_EXTRA, this.mNumLoaders);
     }
 }
