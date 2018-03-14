@@ -54,8 +54,10 @@ public class SettingsFragment extends PreferenceFragmentCompat implements OnShar
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Preference changedPref = this.getPreferenceScreen().findPreference(key);
-        String changedValue = this.getPreferenceManager().getSharedPreferences().getString(key, "");
-        setPreferenceSummary(changedPref, changedValue);
+        if (changedPref != null) {
+            String changedValue = this.getPreferenceManager().getSharedPreferences().getString(key, "");
+            setPreferenceSummary(changedPref, changedValue);
+        }
     }
 
     private void setPreferenceSummary(Preference preference, String value) {
