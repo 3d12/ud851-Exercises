@@ -113,9 +113,9 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         if (preference.getKey().equals(getString(R.string.pref_size_key))) {
-            float testFloat;
             try {
-                testFloat = Float.parseFloat(newValue.toString());
+                String testString = (String) newValue;
+                float testFloat = Float.parseFloat(testString);
                 if ((testFloat > 0) && (testFloat <= 3)) {
                     return true;
                 } else {
