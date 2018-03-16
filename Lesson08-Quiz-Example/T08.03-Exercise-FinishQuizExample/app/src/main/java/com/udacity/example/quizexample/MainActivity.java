@@ -21,11 +21,14 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.udacity.example.droidtermsprovider.DroidTermsExampleContract;
+
+import java.util.Random;
 
 /**
  * Gets the data from the ContentProvider and shows a series of flash cards.
@@ -38,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
     // The current state of the app
     private int mCurrentState;
+    private int mLastWord;
 
     private Button mButton;
     private TextView mQuizWord;
@@ -97,9 +101,17 @@ public class MainActivity extends AppCompatActivity {
         // Note that you shouldn't try to do this if the cursor hasn't been set yet.
         // If you reach the end of the list of words, you should start at the beginning again.
         if (mData != null) {
-            if (!mData.moveToNext()) {
-                mData.moveToFirst();
+//            if (!mData.moveToNext()) {
+//                mData.moveToFirst();
+//            }
+            int cursorCount = mData.getCount();
+            Random random = new Random();
+            int testRand = random.nextInt(cursorCount);
+            while (testRand == mLastWord) {
+                testRand = random.nextInt(cursorCount);
             }
+            mLastWord = testRand;
+            mData.moveToPosition(testRand);
             mQuizWord.setText(mData.getString(mData.getColumnIndex(DroidTermsExampleContract.COLUMN_WORD)));
             mQuizDefinition.setText(mData.getString(mData.getColumnIndex(DroidTermsExampleContract.COLUMN_DEFINITION)));
             mCurrentState = STATE_HIDDEN;
@@ -157,6 +169,7 @@ public class MainActivity extends AppCompatActivity {
             // DONE (2) Initialize anything that you need the cursor for, such as setting up
             // the screen with the first word and setting any other instance variables
             cursor.moveToFirst();
+            mLastWord = cursor.getPosition();
             mQuizWord.setText(cursor.getString(cursor.getColumnIndex(DroidTermsExampleContract.COLUMN_WORD)));
             mQuizDefinition.setText(cursor.getString(cursor.getColumnIndex(DroidTermsExampleContract.COLUMN_DEFINITION)));
         }
