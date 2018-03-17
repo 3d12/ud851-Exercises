@@ -28,6 +28,7 @@ import android.widget.TextView;
 
 import com.udacity.example.droidtermsprovider.DroidTermsExampleContract;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     // The current state of the app
     private int mCurrentState;
     private int mLastWord;
+    private ArrayList<Integer> mSelectedWords;
 
     private Button mButton;
     private TextView mQuizWord;
@@ -67,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
         mQuizWord = (TextView) this.findViewById(R.id.text_view_word);
         mQuizDefinition = (TextView) this.findViewById(R.id.text_view_definition);
         mQuizDefinition.setVisibility(View.INVISIBLE);
+        mSelectedWords = new ArrayList<Integer>();
 
         //Run the database operation to get the cursor off of the main thread
         new WordFetchTask().execute();
@@ -107,10 +110,14 @@ public class MainActivity extends AppCompatActivity {
             int cursorCount = mData.getCount();
             Random random = new Random();
             int testRand = random.nextInt(cursorCount);
-            while (testRand == mLastWord) {
+            while ((testRand == mLastWord) || (mSelectedWords.contains(testRand))) {
+                if (mSelectedWords.size() == cursorCount) {
+                    mSelectedWords.clear();
+                }
                 testRand = random.nextInt(cursorCount);
             }
             mLastWord = testRand;
+            mSelectedWords.add(testRand);
             mData.moveToPosition(testRand);
             mQuizWord.setText(mData.getString(mData.getColumnIndex(DroidTermsExampleContract.COLUMN_WORD)));
             mQuizDefinition.setText(mData.getString(mData.getColumnIndex(DroidTermsExampleContract.COLUMN_DEFINITION)));
@@ -170,6 +177,7 @@ public class MainActivity extends AppCompatActivity {
             // the screen with the first word and setting any other instance variables
             cursor.moveToFirst();
             mLastWord = cursor.getPosition();
+            mSelectedWords.add(cursor.getPosition());
             mQuizWord.setText(cursor.getString(cursor.getColumnIndex(DroidTermsExampleContract.COLUMN_WORD)));
             mQuizDefinition.setText(cursor.getString(cursor.getColumnIndex(DroidTermsExampleContract.COLUMN_DEFINITION)));
         }
