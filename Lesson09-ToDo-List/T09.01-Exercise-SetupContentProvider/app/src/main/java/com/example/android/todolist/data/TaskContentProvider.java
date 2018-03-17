@@ -39,7 +39,7 @@ public class TaskContentProvider extends ContentProvider {
         // [Hint] Declare the DbHelper as a global variable
         this.taskDbHelper = new TaskDbHelper(getContext());
 
-        return false;
+        return true;
     }
 
 
