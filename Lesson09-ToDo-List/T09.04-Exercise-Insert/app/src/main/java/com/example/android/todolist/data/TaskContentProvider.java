@@ -17,12 +17,19 @@
 package com.example.android.todolist.data;
 
 import android.content.ContentProvider;
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.util.Log;
+
+import java.nio.channels.UnsupportedAddressTypeException;
 
 // Verify that TaskContentProvider extends from ContentProvider and implements required methods
 public class TaskContentProvider extends ContentProvider {
@@ -78,16 +85,32 @@ public class TaskContentProvider extends ContentProvider {
 
     @Override
     public Uri insert(@NonNull Uri uri, ContentValues values) {
-        // TODO (1) Get access to the task database (to write new data to)
+        // DONE (1) Get access to the task database (to write new data to)
+        SQLiteDatabase writableDatabase = mTaskDbHelper.getWritableDatabase();
 
-        // TODO (2) Write URI matching code to identify the match for the tasks directory
+        // DONE (2) Write URI matching code to identify the match for the tasks directory
+        int match_result = sUriMatcher.match(uri);
 
-        // TODO (3) Insert new values into the database
-        // TODO (4) Set the value for the returnedUri and write the default case for unknown URI's
+        // DONE (3) Insert new values into the database
+        // DONE (4) Set the value for the returnedUri and write the default case for unknown URI's
+        Uri returnUri;
+        switch (match_result) {
+            case TASKS:
+                long insert_id = writableDatabase.insert(TaskContract.TaskEntry.TABLE_NAME, null, values);
+                if (insert_id != -1) {
+                    returnUri = ContentUris.withAppendedId(TaskContract.TaskEntry.CONTENT_URI, insert_id);
+                    Log.d("Insert", "Returned Uri from insert function is: " + returnUri.toString());
+                    break;
+                } else {
+                    throw new SQLiteException("Unable to insert values into " + uri.toString());
+                }
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri.toString());
+        }
 
-        // TODO (5) Notify the resolver if the uri has been changed, and return the newly inserted URI
-
-        throw new UnsupportedOperationException("Not yet implemented");
+        // DONE (5) Notify the resolver if the uri has been changed, and return the newly inserted URI
+        getContext().getContentResolver().notifyChange(uri, null);
+        return returnUri;
     }
 
 
