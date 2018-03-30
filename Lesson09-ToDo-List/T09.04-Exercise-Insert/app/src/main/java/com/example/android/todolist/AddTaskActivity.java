@@ -54,12 +54,14 @@ public class AddTaskActivity extends AppCompatActivity {
         // DONE (6) Check if EditText is empty, if not retrieve input and store it in a ContentValues object
         EditText et_taskDescription = (EditText) findViewById(R.id.editTextTaskDescription);
         ContentValues cv = new ContentValues();
-        if (!et_taskDescription.getText().toString().isEmpty()) {
-            cv.put(TaskContract.TaskEntry.COLUMN_DESCRIPTION, et_taskDescription.getText().toString());
-            cv.put(TaskContract.TaskEntry.COLUMN_PRIORITY, mPriority);
+        if (et_taskDescription.getText().toString().length() == 0) {
+            return;
         }
 
         // DONE (7) Insert new task data via a ContentResolver
+        cv.put(TaskContract.TaskEntry.COLUMN_DESCRIPTION, et_taskDescription.getText().toString());
+        cv.put(TaskContract.TaskEntry.COLUMN_PRIORITY, mPriority);
+
         ContentResolver cr = this.getContentResolver();
         Uri uri = cr.insert(TaskContract.TaskEntry.CONTENT_URI, cv);
 
