@@ -28,6 +28,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.View;
 
 import com.example.android.todolist.data.TaskContract;
@@ -152,12 +153,13 @@ public class MainActivity extends AppCompatActivity implements
                 // DONE (5) Query and load all task data in the background; sort by priority
                 // [Hint] use a try/catch block to catch any errors in loading data
                 ContentResolver cr = this.getContext().getContentResolver();
-                Cursor queryResult = cr.query(TaskContract.TaskEntry.CONTENT_URI, null, null, null, TaskContract.TaskEntry.COLUMN_PRIORITY + " asc");
-                if (queryResult == null) {
+                try {
+                    return cr.query(TaskContract.TaskEntry.CONTENT_URI, null, null, null, TaskContract.TaskEntry.COLUMN_PRIORITY + " asc");
+                } catch (Exception e) {
+                    Log.d("AsyncTaskLoader", "Failed to query database.");
+                    e.printStackTrace();
                     return null;
                 }
-
-                return queryResult;
             }
 
             // deliverResult sends the result of the load, a Cursor, to the registered listener
