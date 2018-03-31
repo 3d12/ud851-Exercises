@@ -17,6 +17,7 @@
 package com.example.android.todolist.data;
 
 import android.content.ContentProvider;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
@@ -25,6 +26,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.widget.Toast;
 
 import static com.example.android.todolist.data.TaskContract.TaskEntry.TABLE_NAME;
 
@@ -138,14 +140,29 @@ public class TaskContentProvider extends ContentProvider {
                         null,
                         sortOrder);
                 break;
+            case TASK_WITH_ID:
+                retCursor = readableDatabase.query(TaskContract.TaskEntry.TABLE_NAME,
+                        projection,
+                        "_id=?",
+                        new String[]{uri.getPathSegments().get(1)},
+                        null,
+                        null,
+                        sortOrder);
+                break;
             default:
                 throw new UnsupportedOperationException("Unable to parse Uri received: " + uri.toString());
         }
 
         // DONE (3) Query for the tasks directory and write a default case
+        ContentResolver cr;
+        try {
+            cr = getContext().getContentResolver();
+        } catch (NullPointerException e) {
+            throw new NullPointerException();
+        }
 
         // DONE (4) Set a notification URI on the Cursor and return that Cursor
-        retCursor.setNotificationUri(getContext().getContentResolver(), uri);
+        retCursor.setNotificationUri(cr, uri);
 
         return retCursor;
     }
