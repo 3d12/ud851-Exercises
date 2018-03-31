@@ -21,6 +21,7 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.UriMatcher;
+import android.database.ContentObserver;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
@@ -178,7 +179,9 @@ public class TaskContentProvider extends ContentProvider {
         // [Hint] Use selections to delete an item by its row ID
 
         // DONE (3) Notify the resolver of a change and return the number of items deleted
-        getContext().getContentResolver().notify();
+        if (retValue > 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
         return retValue;
     }
 
