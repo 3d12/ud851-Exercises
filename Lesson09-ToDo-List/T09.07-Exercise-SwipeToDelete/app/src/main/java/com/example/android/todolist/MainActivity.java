@@ -16,6 +16,7 @@
 
 package com.example.android.todolist;
 
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -29,6 +30,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.android.todolist.data.TaskContract;
 
@@ -77,13 +79,21 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
                 // Here is where you'll implement swipe to delete
+                ContentResolver cr = getBaseContext().getContentResolver();
+                int numDeleted = cr.delete(TaskContract.TaskEntry.CONTENT_URI.buildUpon().appendPath(viewHolder.itemView.getTag().toString()).build(),
+                        null,
+                        null);
+                if (numDeleted > 0) {
+                    Toast.makeText(getBaseContext(), "Deleted " + numDeleted + " item", Toast.LENGTH_SHORT).show();
+                    getSupportLoaderManager().restartLoader(TASK_LOADER_ID, null, MainActivity.this);
+                }
 
-                // TODO (1) Construct the URI for the item to delete
+                // DONE (1) Construct the URI for the item to delete
                 //[Hint] Use getTag (from the adapter code) to get the id of the swiped item
 
-                // TODO (2) Delete a single row of data using a ContentResolver
+                // DONE (2) Delete a single row of data using a ContentResolver
 
-                // TODO (3) Restart the loader to re-query for all tasks after a deletion
+                // DONE (3) Restart the loader to re-query for all tasks after a deletion
                 
             }
         }).attachToRecyclerView(mRecyclerView);
