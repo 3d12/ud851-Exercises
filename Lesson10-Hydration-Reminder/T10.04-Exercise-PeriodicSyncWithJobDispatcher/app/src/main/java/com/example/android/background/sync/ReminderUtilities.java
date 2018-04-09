@@ -51,7 +51,8 @@ public class ReminderUtilities {
         builder.addConstraint(Constraint.DEVICE_CHARGING);
         builder.setLifetime(Lifetime.FOREVER);
         builder.setRecurring(true);
-        builder.setTrigger(Trigger.executionWindow(0, REMINDER_INTERVAL_SECONDS));
+        builder.setTrigger(Trigger.executionWindow(REMINDER_INTERVAL_SECONDS,
+                REMINDER_INTERVAL_SECONDS + SYNC_FLEXTIME_SECONDS));
         builder.setReplaceCurrent(true);
         Job job = builder.build();
         fjd.schedule(job);
